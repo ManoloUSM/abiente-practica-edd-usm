@@ -1,3 +1,4 @@
+
 # Ambiente de Práctica — Certamen 3 (INF-134 Estructuras de Datos)
 
 Este ambiente está diseñado para que implementes en **código C++ real** todos los ejercicios programables de la guía *Ejercicios de Certamen 3 de Años Anteriores*, utilizando exactamente los mismos TDAs de tus carpetas (`grafos/` y `colasp/`) sin modificar ninguno de tus archivos originales.
@@ -87,3 +88,4 @@ for (tVertice w = G.first(v); w < G.nVertex(); w = G.next(v, w)) {
 | **24** | Grafos (Recorrido condicional) | `seContagiaTodaLaRegion(tGrafo &G, tVertice comunaInicial, float *grados)` | $O(\|V\| + \|E\|)$ |
 
 *(Los ejercicios 2, 3, 4, 10, 11, 13, 14, 15, 16, 19 y 22 de la guía son de simulación manual de tablas de Hashing, inserción paso a paso en AVL/Heaps o Verdadero y Falso).*
+
