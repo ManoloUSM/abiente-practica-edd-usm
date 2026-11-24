@@ -12,8 +12,24 @@
  */
 tVertice masCitado(tGrafo &G) {
     // TODO: Implementa tu código aquí
-    
-    return -1;
+    int* A= new int[G.nVertex()];
+    for(int i=0;i<G.nVertex();i++){
+        A[i]=0;
+    }
+    for(int i=0;i<G.nVertex();i++){
+        for(tVertice w=G.first(i);w<G.nVertex();w=G.next(i,w)){
+            A[w]+=1;
+        }
+    }
+    int max=-9999, retorno=0;
+    for(int i=0;i<G.nVertex();i++){
+        if(A[i]>max){
+            max=A[i];
+            retorno=i;
+        }
+    }
+
+    return retorno;
 }
 
 // ============================================================================
@@ -32,8 +48,16 @@ tVertice* amigosNoComunes(tGrafo &G, tVertice v1, tVertice v2, int &cantResultad
     tVertice *resultado = new tVertice[G.nVertex()];
 
     // TODO: Implementa tu código aquí
-
+    /*
+    for(tVertice w=G.first(v2);w<G.nVertex();w=G.next(v2,w)){
+        for(tVertice o=G.first(v1);o<G.nVertex();o=G.next(v1,w)){
+            if(o==w){
+                G.setMark()
+            }
+        }
+    }
     return resultado;
+    */
 }
 
 // ============================================================================
@@ -76,9 +100,26 @@ int minimaCantRutas(tGrafo &G) {
 tVertice* saturados(tGrafo &G, int &cantSaturados) {
     cantSaturados = 0;
     tVertice *resultado = new tVertice[G.nVertex()];
-
     // TODO: Implementa tu código aquí
-
+    int* entra=new int[G.nVertex()];
+    int* sale=new int[G.nVertex()];
+    for(int i=0;i<G.nVertex();i++){
+        entra[i]=0;
+    }
+    for(int i=0;i<G.nVertex();i++){
+        int contador=0;
+        for(tVertice w=G.first(i);w<G.nVertex();w=G.next(i,w)){
+            entra[w]++;
+            contador++;
+        }
+        sale[i]=contador;
+    }
+    for(int i=0;i<G.nVertex();i++){
+        if(sale[i]-entra[i]<0){
+            resultado[cantSaturados]=i;
+            cantSaturados++;
+        }
+    }
     return resultado;
 }
 
@@ -92,12 +133,38 @@ tVertice* saturados(tGrafo &G, int &cantSaturados) {
  * de componentes conexas (desconectadas entre sí) de la red G en O(|V| + |E|).
  * Nota: Ojo que G se recibe como puntero (usa G->nVertex() o (*G)).
  */
+/* NO FUNCIONA LO SIGUIENTE
 int componentesDesconectadas(tGrafo *G) {
-    // TODO: Implementa tu código aquí
-
-    return -1;
+    int desconectados=0;
+    int* entradas= new int[G->nVertex()];
+    int* salidas= new int[G->nVertex()];
+    for(int i=0; i<G->nVertex(); i++){
+        int contador=0;
+        for(tVertice w=G->first(i);w<G->nVertex();w=G->next(i,w)){
+            entradas[w]++;
+            contador++;
+        }
+        salidas[i]=contador;
+    }
+    for(int i=0; i<G->nVertex(); i++){
+        if(entradas[i]==0 && salidas[i]==0){
+            desconectados++;
+        }
+    }
+    return desconectados;
 }
-
+    */
+int componentesDesconectadas(tGrafo *G) {
+    if(G==nullptr) return 0;
+    int componentes=0;
+    for(int i=0; i<G->nVertex(); i++){
+        if(G->getMark(i)==NOVISITADO){
+            DFS(*G,i);
+            componentes++;
+        }
+    }
+    return componentes;
+}
 // ============================================================================
 // EJERCICIO 9: Modificar valor en un Max-Heap
 // ============================================================================
@@ -110,7 +177,18 @@ int componentesDesconectadas(tGrafo *G) {
  */
 void modificarValorHeap(tColaP &H, int i, tipoElem j) {
     // TODO: Implementa tu código aquí
-
+    if(i<0 || i>=H.sizeColaP()){
+        return;
+    }
+    if(H.Heap[i]>j){
+        H.Heap[i]=j;
+        H.hundir(i);
+    }
+    else if(H.Heap[i]<j){
+        H.Heap[i]=j;
+        H.flotar(i);
+    }
+    return;
 }
 
 // ============================================================================
@@ -129,7 +207,22 @@ void modificarValorHeap(tColaP &H, int i, tipoElem j) {
  */
 int* solo_pares(int *arreglo, int &tamanno) {
     // TODO: Implementa tu código aquí
-
+    int aux=0;
+    int i=1;
+    while(i<tamanno){
+        if(arreglo[i]%2!=0){
+            aux=arreglo[i];
+            arreglo[i]=arreglo[tamanno];
+            arreglo[tamanno]=aux;
+            tamanno--;
+        }
+        else{
+            i++;
+        }
+    }
+    for(int i=1;i<tamanno;i++){
+        hundir(arreglo, tamanno, i);
+    }
     return arreglo;
 }
 
@@ -185,8 +278,21 @@ float Stream::insertAndGetMedian(int x) {
  */
 tVertice asignar_conductor(tVertice pasajero, tGrafo &G, tVertice *conductores, int nc) {
     // TODO: Implementa tu código aquí
-
-    return -1;
+    int *D= new int[G.nVertex()];
+    for(int i=0; i<G.nVertex();i++){
+        D[i]=0;
+    }
+    int min=100000;
+    tVertice conduc=0;
+    for(int i=0; i<nc;i++){
+        Dijkstra(G,D,conductores[i]);
+        if(D[pasajero]<min){
+            min=D[pasajero];
+            conduc=conductores[i];
+        }
+    }
+    
+    return conduc;
 }
 
 // ============================================================================
@@ -255,6 +361,91 @@ int costoMinimoFusion(int energia[], int n) {
  */
 bool seContagiaTodaLaRegion(tGrafo &G, tVertice comunaInicial, float *gradosVirus) {
     // TODO: Implementa tu código aquí
+    int valor=0;
+    int n= G.nVertex();
+    for(int i=0;i<n;i++){
+        G.setMark(i,0);
+    }
+    G.setMark(comunaInicial,1);
+    valor++;
+    for(int i=0;i<n;i++){
+        for(tVertice w=G.first(i);w<G.nVertex();w=G.next(i,w)){
+            if(gradosVirus[i]/G.weight(i,w)>1.00 && G.getMark(w)==0){
+                G.setMark(w,1);
+                valor++;
+            }
+        }
+    }
+    if(valor==n){
+        return true;
+    }
+    else{
+        return false;
+    }
+   /*
+    tCola Q;
+    tVertice v, w;
+    int valor=0;
+    int n= G.nVertex();
+    for(int i=0;i<n;i++){
+        G.setMark(i,0);
+    }
+    Q.enqueue(comunaInicial);
+    G.setMark(comunaInicial, VISITADO);
+    valor++;
+    while (Q.size() != 0) {
+        v = Q.frontValue();
+        Q.dequeue();
+        for (w = G.first(v); w < G.nVertex(); w = G.next(v, w)) {
+            if (G.getMark(w) == NOVISITADO && gradosVirus[v]/G.weight(v,w)>1.00) {
+                G.setMark(w, VISITADO);
+                Q.enqueue(w);
+                valor++;
+            }
+        }
+    }
+    if(valor==n){
+        return true;
+    }
+    else{
+        return false;
+    }
+        */
+}
 
-    return false;
+// ============================================================================
+// EJERCICIO BONUS 1: Centro del grafo (el_centro)
+// ============================================================================
+/*
+ * Enunciado:
+ * Para un grafo no dirigido con pesos y conexo, se define la centralidad de un
+ * nodo como la suma de todos los caminos más cortos partiendo de dicho nodo.
+ * Implemente en C++ la función el_centro, la cual al recibir un grafo determina
+ * cuál es el nodo que representa el centro del grafo, es decir, el nodo cuya
+ * centralidad es la menor de todas.
+ * Nota: Puedes emplear Dijkstra(G, D, s) de algoritmos_base.h.
+ */
+tVertice el_centro(tGrafo &G) {
+    // TODO: Implementa tu código aquí
+    
+    return -1;
+}
+
+// ============================================================================
+// EJERCICIO BONUS 2: Cantidad de puentes (cantidad_de_puentes)
+// ============================================================================
+/*
+ * Enunciado:
+ * Un puente es un arco de un grafo no dirigido, tal que al eliminarlo del grafo,
+ * éste se vuelve desconexo.
+ * Implemente en C++ la función cantidad_de_puentes, la cual al recibir un grafo
+ * retorna la cantidad de puentes que posee el grafo.
+ * Nota: Puedes emplear DFS(G, v) o BFS(G, s), además de G.deleteEdge / G.setEdge
+ * y G.weight (recuerda que en un grafo no dirigido cada arista entre v y w está
+ * representada como (v, w) y (w, v)).
+ */
+int cantidad_de_puentes(tGrafo &G) {
+    // TODO: Implementa tu código aquí
+
+    return -1;
 }

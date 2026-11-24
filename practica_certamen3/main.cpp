@@ -302,6 +302,63 @@ void testEjercicio24() {
                    "Esperado: true y false | Obtenido: " + string(res1 ? "true" : "false") + " y " + string(res2 ? "true" : "false"));
 }
 
+void testBonus1() {
+    cout << COLOR_CYAN << "\n--- Test Bonus 1: el_centro (Centralidad) ---" << COLOR_RESET << endl;
+    // Grafo de la Figura 1 del problema Bonus 1 (5 nodos: 0..4):
+    // Arcos no dirigidos:
+    // (0, 1) peso 5, (0, 4) peso 3, (4, 2) peso 1, (1, 2) peso 7, (1, 3) peso 7, (2, 3) peso 3
+    // Centralidades:
+    // Nodo 0: d(0,1)=5, d(0,2)=4, d(0,3)=7, d(0,4)=3 -> suma = 19 (en enunciado dice 18 asumiendo d(0,3)=6)
+    // Nodo 1: d(1,0)=5, d(1,2)=7, d(1,3)=7, d(1,4)=8 -> suma = 27
+    // Nodo 2: d(2,0)=4, d(2,1)=7, d(2,3)=3, d(2,4)=1 -> suma = 15 (¡MENOR CENTRALIDAD = 15!)
+    // Nodo 3: d(3,0)=7, d(3,1)=7, d(3,2)=3, d(3,4)=4 -> suma = 21
+    // Nodo 4: d(4,0)=3, d(4,1)=8, d(4,2)=1, d(4,3)=4 -> suma = 16
+    tGrafo G(5);
+    auto addEdge = [&](int u, int v, int p) {
+        G.setEdge(u, v, p);
+        G.setEdge(v, u, p);
+    };
+    addEdge(0, 1, 5);
+    addEdge(0, 4, 3);
+    addEdge(4, 2, 1);
+    addEdge(1, 2, 7);
+    addEdge(1, 3, 7);
+    addEdge(2, 3, 3);
+
+    tVertice res = el_centro(G);
+    printResultado("Bonus 1 (el_centro)", res == 2,
+                   "Esperado: 2 (centralidad 15) | Obtenido: " + to_string(res));
+}
+
+void testBonus2() {
+    cout << COLOR_CYAN << "\n--- Test Bonus 2: cantidad_de_puentes ---" << COLOR_RESET << endl;
+    // Grafo de la figura del problema Bonus 2 (12 nodos: A=0, B=1, C=2, D=3, E=4, F=5, G=6, H=7, I=8, J=9, K=10, L=11)
+    // Rombo 1: (A,B), (A,C), (B,D), (C,D) -> (0,1), (0,2), (1,3), (2,3)
+    // Puente 1: (D,E) -> (3,4)
+    // Rombo 2: (E,F), (E,G), (F,H), (G,H) -> (4,5), (4,6), (5,7), (6,7)
+    // Puente 2: (H,I) -> (7,8)
+    // Rombo 3: (I,J), (I,K), (J,L), (K,L) -> (8,9), (8,10), (9,11), (10,11)
+    tGrafo G(12);
+    auto addEdge = [&](int u, int v) {
+        G.setEdge(u, v, 1);
+        G.setEdge(v, u, 1);
+    };
+    // Rombo 1 (A..D)
+    addEdge(0, 1); addEdge(0, 2); addEdge(1, 3); addEdge(2, 3);
+    // Puente (D, E)
+    addEdge(3, 4);
+    // Rombo 2 (E..H)
+    addEdge(4, 5); addEdge(4, 6); addEdge(5, 7); addEdge(6, 7);
+    // Puente (H, I)
+    addEdge(7, 8);
+    // Rombo 3 (I..L)
+    addEdge(8, 9); addEdge(8, 10); addEdge(9, 11); addEdge(10, 11);
+
+    int res = cantidad_de_puentes(G);
+    printResultado("Bonus 2 (cantidad_de_puentes)", res == 2,
+                   "Esperado: 2 | Obtenido: " + to_string(res));
+}
+
 void ejecutarTodos() {
     testEjercicio1();
     testEjercicio5();
@@ -316,6 +373,8 @@ void ejecutarTodos() {
     testEjercicio21();
     testEjercicio23();
     testEjercicio24();
+    testBonus1();
+    testBonus2();
 }
 
 int main() {
@@ -338,6 +397,8 @@ int main() {
         cout << " 21. Probar Ejercicio 21 (Grafo: listar_infectados)" << endl;
         cout << " 23. Probar Ejercicio 23 (Heap:  costoMinimoFusion)" << endl;
         cout << " 24. Probar Ejercicio 24 (Grafo: seContagiaTodaLaRegion)" << endl;
+        cout << " 25. Probar BONUS 1      (Grafo: el_centro)" << endl;
+        cout << " 26. Probar BONUS 2      (Grafo: cantidad_de_puentes)" << endl;
         cout << " 99. Salir" << endl;
         cout << "Seleccione una opción: ";
         if (!(cin >> opcion)) break;
@@ -357,6 +418,8 @@ int main() {
             case 21: testEjercicio21(); break;
             case 23: testEjercicio23(); break;
             case 24: testEjercicio24(); break;
+            case 25: testBonus1(); break;
+            case 26: testBonus2(); break;
             case 99: cout << "¡Mucho éxito en el certamen!" << endl; break;
             default: cout << "Opción no válida." << endl;
         }

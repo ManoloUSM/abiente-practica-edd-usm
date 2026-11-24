@@ -86,6 +86,8 @@ for (tVertice w = G.first(v); w < G.nVertex(); w = G.next(v, w)) {
 | **21** | Grafos (BFS por niveles) | `listar_infectados(tGrafo &G, tVertice infectada, int cd, int &cant)` | $O(\|V\| + \|E\|)$ |
 | **23** | Cola de Prioridad | `costoMinimoFusion(int energia[], int n)` | $O(n \log n)$ |
 | **24** | Grafos (Recorrido condicional) | `seContagiaTodaLaRegion(tGrafo &G, tVertice comunaInicial, float *grados)` | $O(\|V\| + \|E\|)$ |
+| **Bonus 1 (25)** | Grafos (Centralidad) | `el_centro(tGrafo &G)` | $< O(\|V\|^3)$ (Dijkstra) |
+| **Bonus 2 (26)** | Grafos (Puentes) | `cantidad_de_puentes(tGrafo &G)` | Usando DFS / BFS |
 
 *(Los ejercicios 2, 3, 4, 10, 11, 13, 14, 15, 16, 19 y 22 de la guía son de simulación manual de tablas de Hashing, inserción paso a paso en AVL/Heaps o Verdadero y Falso).*
 

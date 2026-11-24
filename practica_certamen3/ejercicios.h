@@ -41,6 +41,19 @@ tVertice* listar_infectados(tGrafo &G, tVertice infectada, int cd, int &cantInfe
 // (donde d_ij es el peso del arco entre i y j en G).
 bool seContagiaTodaLaRegion(tGrafo &G, tVertice comunaInicial, float *gradosVirus);
 
+// ============================================================================
+// EJERCICIOS BONUS DE GRAFOS
+// ============================================================================
+
+// Bonus 1: Determina cuál es el nodo que representa el centro del grafo,
+// es decir, el nodo cuya centralidad (suma de caminos más cortos hacia todos
+// los demás nodos) es la menor de todas. Complejidad menor a O(|V|^3) (o usando Dijkstra).
+tVertice el_centro(tGrafo &G);
+
+// Bonus 2: Retorna la cantidad de puentes que posee un grafo conexo no dirigido.
+// Un puente es un arco tal que al eliminarlo del grafo, éste se vuelve desconexo.
+int cantidad_de_puentes(tGrafo &G);
+
 
 // ============================================================================
 // EJERCICIOS DE HEAPS / COLAS DE PRIORIDAD
