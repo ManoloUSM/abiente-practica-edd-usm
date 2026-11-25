@@ -48,6 +48,7 @@ tVertice* amigosNoComunes(tGrafo &G, tVertice v1, tVertice v2, int &cantResultad
     tVertice *resultado = new tVertice[G.nVertex()];
 
     // TODO: Implementa tu código aquí
+<<<<<<< Updated upstream
     /*
     for(tVertice w=G.first(v2);w<G.nVertex();w=G.next(v2,w)){
         for(tVertice o=G.first(v1);o<G.nVertex();o=G.next(v1,w)){
@@ -56,6 +57,20 @@ tVertice* amigosNoComunes(tGrafo &G, tVertice v1, tVertice v2, int &cantResultad
             }
         }
     }
+=======
+    for(int w=G.first(v1);w<G.nVertex();w=G.next(v1,w)){
+        G.setMark(w, VISITADO);
+    }
+    for(int w=G.first(v2);w<G.nVertex();w=G.next(v2,w)){
+        if(G.getMark(w)==NOVISITADO){
+            resultado[cantResultados]=w;
+            cantResultados++;
+        }
+    }
+    for(int w=G.first(v1);w<G.nVertex();w=G.next(v1,w)){
+        G.setMark(w, NOVISITADO);
+    }
+>>>>>>> Stashed changes
     return resultado;
     */
 }
@@ -278,6 +293,7 @@ float Stream::insertAndGetMedian(int x) {
  */
 tVertice asignar_conductor(tVertice pasajero, tGrafo &G, tVertice *conductores, int nc) {
     // TODO: Implementa tu código aquí
+<<<<<<< Updated upstream
     int *D= new int[G.nVertex()];
     for(int i=0; i<G.nVertex();i++){
         D[i]=0;
@@ -292,6 +308,25 @@ tVertice asignar_conductor(tVertice pasajero, tGrafo &G, tVertice *conductores, 
         }
     }
     
+=======
+    int* D= new int[G.nVertex()];
+    int min=INFINITO;
+    tVertice conduc=-1;
+    for(int i=0;i<nc;i++){
+        Dijkstra(G,D,conductores[i]);
+        if(D[pasajero]<min){
+            min= D[pasajero];
+            conduc=conductores[i];
+        }
+        for(int i=0;i<G.nVertex();i++){
+            D[i]=INFINITO;
+        }
+        for(int u=0;u<G.nVertex();u++){
+            G.setMark(u,NOVISITADO);
+        }
+    }
+    delete[] D;
+>>>>>>> Stashed changes
     return conduc;
 }
 
@@ -309,7 +344,20 @@ tVertice asignar_conductor(tVertice pasajero, tGrafo &G, tVertice *conductores, 
  */
 int* reparar(int *arreglo, int tamanno) {
     // TODO: Implementa tu código aquí
-
+    if(tamanno>2){
+        for(int i=0;i<tamanno;i++){
+            if(i*2<tamanno){
+                if(arreglo[i]>arreglo[2*i] || arreglo[i]>arreglo[2*i+1]){
+                    hundir(arreglo,tamanno,i);
+                }
+            }
+            else if(i*2<=tamanno){
+                if(arreglo[i]>arreglo[i*2]){
+                    hundir(arreglo,tamanno,i);
+                }
+            }
+        }
+    }
     return arreglo;
 }
 
@@ -329,7 +377,27 @@ tVertice* listar_infectados(tGrafo &G, tVertice infectada, int cd, int &cantInfe
     tVertice *resultado = new tVertice[G.nVertex()];
 
     // TODO: Implementa tu código aquí
-
+    resultado[0]=infectada;
+    cantInfectados++;
+    int contador1=0, contador2=1, agregados=1;
+    for(int i=0;i<G.nVertex();i++){
+        G.setMark(i,0);
+    }
+    G.setMark(infectada,1);
+    for(int i=0;i<cd;i++){
+        for(int u=contador1;u<agregados;u++){
+            for(tVertice w=G.first(resultado[u]);w<G.nVertex();w=G.next(resultado[u],w)){
+                if(G.getMark(w)==0){
+                    resultado[contador2]=w;
+                    cantInfectados++;
+                    G.setMark(w,1);
+                    contador2++;
+                }
+            }
+        }
+        contador1=agregados;
+        agregados=contador2;
+    }
     return resultado;
 }
 
@@ -345,8 +413,20 @@ tVertice* listar_infectados(tGrafo &G, tVertice infectada, int cd, int &cantInfe
  */
 int costoMinimoFusion(int energia[], int n) {
     // TODO: Implementa tu código aquí
-
-    return -1;
+    tColaPMin chi;
+    for(int i=0;i<n;i++){
+        chi.insertColaP(energia[i]);
+    }
+    int acumulado=0;
+    while(chi.sizeColaP()>1){
+        int a=chi.findMin();
+        chi.removeMin();
+        int b=chi.findMin();
+        chi.removeMin();
+        chi.insertColaP(a+b);
+        acumulado+= a+b;
+    }
+    return acumulado;
 }
 
 // ============================================================================
